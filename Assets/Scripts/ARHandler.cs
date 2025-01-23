@@ -95,7 +95,7 @@ public class ARHandler : MonoBehaviour
 
         xRayHead.transform.rotation = Quaternion.Euler(90.0f, 0.0f, 0);
 
-        xRayHead.SetActive(false);
+        xRayHead.SetActive(true);
         //head.SetActive(false);
 
         MainCam.tag = "Untagged";
