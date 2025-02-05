@@ -99,7 +99,7 @@ public class ARHandler : MonoBehaviour
         sceneHandler.SetXRayAsMainPage();
     	isARMode = true;
 
-        xRayHead.transform.rotation = Quaternion.Euler(90.0f, 0.0f, 0);
+        // xRayHead.transform.rotation = Quaternion.Euler(90.0f, 0.0f, 0);
 
         xRayHead.SetActive(true);
         //head.SetActive(false);
@@ -131,7 +131,7 @@ public class ARHandler : MonoBehaviour
         sceneHandler.ARExit();
         sceneHandler.SetXRayAsMainPage();
         xRayHead.transform.position = new Vector3(0, 0, 0);
-        xRayHead.transform.rotation = Quaternion.Euler(90.0f, 0, 0);
+        xRayHead.transform.rotation = Quaternion.Euler(0.0f, 0, 0);
 
         // if already scaled during AR mode, this resets the scale
         // xRayHead.transform.localScale = new Vector3(0.004f, 0.004f, 0.004f);
