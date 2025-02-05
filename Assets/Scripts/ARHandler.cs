@@ -69,9 +69,15 @@ public class ARHandler : MonoBehaviour
                 {
                     xRayHead.SetActive(true);
                     placed = true;
-                    xRayHead.transform.position = hits[0].pose.position;
-                    //xRayHead.transform.LookAt(ARCam.transform, Vector3.up);
                 }
+
+                // allow repeated placement upon tap, however this will increase false positives
+                xRayHead.transform.position = hits[0].pose.position;
+                //xRayHead.transform.LookAt(ARCam.transform, Vector3.up);
+
+                // ensure the x-ray head is upright 
+                Quaternion targetRotation = Quaternion.Euler(0, hits[0].pose.rotation.eulerAngles.y, 0);
+                xRayHead.transform.rotation = targetRotation;
             }
         }
     }
@@ -126,7 +132,9 @@ public class ARHandler : MonoBehaviour
         sceneHandler.SetXRayAsMainPage();
         xRayHead.transform.position = new Vector3(0, 0, 0);
         xRayHead.transform.rotation = Quaternion.Euler(90.0f, 0, 0);
-        xRayHead.transform.localScale = new Vector3(0.004f, 0.004f, 0.004f);
+
+        // if already scaled during AR mode, this resets the scale
+        // xRayHead.transform.localScale = new Vector3(0.004f, 0.004f, 0.004f);
     }
 
     public void UIMode ()

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 160379074}
-  m_IndirectSpecularColor: {r: 0.18028326, g: 0.22571333, b: 0.30692202, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -416,7 +416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scale_Rect: {x: 0.3, y: 0.3, z: 1}
-  scale_Button: {x: 0.1, y: 0.1, z: 1}
+  scale_Button: {x: 0.2, y: 0.2, z: 1}
 --- !u!65 &44551146
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4161,7 +4161,7 @@ GameObject:
   - component: {fileID: 792872526}
   - component: {fileID: 792872527}
   - component: {fileID: 792872528}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LeftBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4290,7 +4290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scale_Rect: {x: 0.3, y: 0.3, z: 1}
-  scale_Button: {x: 0.1, y: 0.1, z: 1}
+  scale_Button: {x: 0.2, y: 0.2, z: 1}
 --- !u!65 &792872527
 BoxCollider:
   m_ObjectHideFlags: 0
