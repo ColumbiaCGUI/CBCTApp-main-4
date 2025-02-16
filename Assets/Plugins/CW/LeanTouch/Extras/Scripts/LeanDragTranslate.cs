@@ -19,6 +19,10 @@ namespace Lean.Touch
 		/// -1 = Inverted Controls.</summary>
 		public float Sensitivity { set { sensitivity = value; } get { return sensitivity; } } [SerializeField] private float sensitivity = 1.0f;
 
+		// /// <summary>The movement speed will be multiplied by this.
+		// /// -1 = Inverted Controls.</summary>
+		// public float IsFrontView { set { isFrontView = value; } get { return isFrontView; } } [SerializeField] private float isFrontView = 1.0f;
+
 		/// <summary>If you want this component to change smoothly over time, then this allows you to control how quick the changes reach their target value.
 		/// -1 = Instantly change.
 		/// 1 = Slowly change.
@@ -30,6 +34,7 @@ namespace Lean.Touch
 		public float Inertia { set { inertia = value; } get { return inertia; } } [SerializeField] [Range(0.0f, 1.0f)] private float inertia;
 
 		[SerializeField]
+
 		private Vector3 remainingTranslation;
 
 		/// <summary>If you've set Use to ManuallyAddedFingers, then you can call this method to manually add a finger.</summary>
@@ -126,6 +131,21 @@ namespace Lean.Touch
 
 			// Add the deltaPosition
 			screenPoint += screenDelta * Sensitivity;
+			// Debug.Log("making bounds for front view");
+
+			// if (isFrontView == 1.0f) {
+			// 	// Clamp the screen position so that x stays within the left half of the screen.
+			// 	// Here, we assume the left half is defined as x between 0 and Screen.width / 2,
+			// 	// and for y, we keep the entire screen height (from 0 to Screen.height).
+			// 	screenPoint.x = Mathf.Clamp(screenPoint.x, 0, Screen.width / 2);
+			// 	screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+			// } else {
+			// 	// Clamp the screen position so that x stays within the right half of the screen.
+            //     // Here, we assume the right half is defined as x between Screen.width / 2 and Screen.width,
+            //     // and for y, we keep the entire screen height (from 0 to Screen.height).
+            //     screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2, Screen.width);
+            //     screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+			// }
 
 			// Convert back to world space
 			var worldPoint = default(Vector3);

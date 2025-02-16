@@ -64,50 +64,52 @@ namespace Lean.Touch
 
 		protected virtual void Update()
 		{
-			// Store
-			var oldScale = transform.localPosition;
+			if (Input.touchCount >= 2) {
+				// Store
+				var oldScale = transform.localPosition;
 
-			// Get the fingers we want to use
-			var fingers = Use.UpdateAndGetFingers();
+				// Get the fingers we want to use
+				var fingers = Use.UpdateAndGetFingers();
 
-			// Calculate pinch scale, and make sure it's valid
-			var pinchScale = LeanGesture.GetPinchScale(fingers);
+				// Calculate pinch scale, and make sure it's valid
+				var pinchScale = LeanGesture.GetPinchScale(fingers);
 
-			if (pinchScale != 1.0f)
-			{
-				pinchScale = Mathf.Pow(pinchScale, sensitivity);
-
-				// Perform the translation if this is a relative scale
-				if (relative == true)
+				if (pinchScale != 1.0f)
 				{
-					var pinchScreenCenter = LeanGesture.GetScreenCenter(fingers);
+					pinchScale = Mathf.Pow(pinchScale, sensitivity);
 
-					if (transform is RectTransform)
+					// Perform the translation if this is a relative scale
+					if (relative == true)
 					{
-						TranslateUI(pinchScale, pinchScreenCenter);
+						var pinchScreenCenter = LeanGesture.GetScreenCenter(fingers);
+
+						if (transform is RectTransform)
+						{
+							TranslateUI(pinchScale, pinchScreenCenter);
+						}
+						else
+						{
+							Translate(pinchScale, pinchScreenCenter);
+						}
 					}
-					else
-					{
-						Translate(pinchScale, pinchScreenCenter);
-					}
+
+					transform.localScale *= pinchScale;
+
+					remainingScale += transform.localPosition - oldScale;
 				}
 
-				transform.localScale *= pinchScale;
+				// Get t value
+				var factor = CwHelper.DampenFactor(damping, Time.deltaTime);
 
-				remainingScale += transform.localPosition - oldScale;
+				// Dampen remainingDelta
+				var newRemainingScale = Vector3.Lerp(remainingScale, Vector3.zero, factor);
+
+				// Shift this transform by the change in delta
+				transform.localPosition = oldScale + remainingScale - newRemainingScale;
+
+				// Update remainingDelta with the dampened value
+				remainingScale = newRemainingScale;
 			}
-
-			// Get t value
-			var factor = CwHelper.DampenFactor(damping, Time.deltaTime);
-
-			// Dampen remainingDelta
-			var newRemainingScale = Vector3.Lerp(remainingScale, Vector3.zero, factor);
-
-			// Shift this transform by the change in delta
-			transform.localPosition = oldScale + remainingScale - newRemainingScale;
-
-			// Update remainingDelta with the dampened value
-			remainingScale = newRemainingScale;
 		}
 
 		protected virtual void TranslateUI(float pinchScale, Vector2 pinchScreenCenter)

@@ -56,7 +56,7 @@ public class ARHandler : MonoBehaviour
 
     void Update()
     {
-        if (isARMode && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (isARMode && Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
 
             if (Input.GetTouch(0).position.x < widthSlider.transform.position.x || Input.GetTouch(0).position.x > (transparencySlider.transform.position.x - x_diff))
@@ -65,6 +65,19 @@ public class ARHandler : MonoBehaviour
             }
             if (raycastManager.Raycast(Input.GetTouch(0).position, hits))
             {
+                Collider skullCollider = xRayHead.GetComponent<Collider>();
+            
+                if (skullCollider != null)
+                {
+                    // Using ClosestPoint: if the hit point is inside the collider, the closest point equals the hit point
+                    Vector3 closestPoint = skullCollider.ClosestPoint(hits[0].pose.position);
+                    if (Vector3.Distance(closestPoint, hits[0].pose.position) < 0.001f)
+                    {
+                        // Hit is inside the skull's collider, so do nothing.
+                        return;
+                    }
+                }
+
                 if (!placed)
                 {
                     xRayHead.SetActive(true);
@@ -76,8 +89,8 @@ public class ARHandler : MonoBehaviour
                 //xRayHead.transform.LookAt(ARCam.transform, Vector3.up);
 
                 // ensure the x-ray head is upright 
-                Quaternion targetRotation = Quaternion.Euler(0, hits[0].pose.rotation.eulerAngles.y, 0);
-                xRayHead.transform.rotation = targetRotation;
+                // Quaternion targetRotation = Quaternion.Euler(0, hits[0].pose.rotation.eulerAngles.y, 0);
+                // xRayHead.transform.rotation = targetRotation;
             }
         }
     }

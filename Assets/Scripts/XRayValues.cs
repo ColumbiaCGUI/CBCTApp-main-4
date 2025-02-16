@@ -35,7 +35,7 @@ public class XRayValues : MonoBehaviour
             front.transform.localPosition.y + front.transform.localScale.y * frontUI.savedPos.y, 
             side.transform.localPosition.z + side.transform.localScale.x * sideUI.savedPos.x
             ); 
-
+        
         // constant to relate head to xRayHead
         float scale  = head.transform.localScale.x / xRayHead.transform.localScale.x;
 

@@ -28,7 +28,7 @@ public class UIEnforceConstraints : MonoBehaviour
 
 	/// Local height of the box
 	public float height;
-
+	
 	float zPos;
 
     // Start is called before the first frame update
