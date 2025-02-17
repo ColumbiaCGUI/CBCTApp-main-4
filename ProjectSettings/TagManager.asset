@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Spawnable
   - ARCam
+  - sideCam
+  - left
+  - right
   layers:
   - Default
   - TransparentFX

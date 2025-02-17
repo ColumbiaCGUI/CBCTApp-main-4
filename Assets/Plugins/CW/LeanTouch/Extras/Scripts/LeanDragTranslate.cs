@@ -1,5 +1,7 @@
 using UnityEngine;
 using CW.Common;
+using System.Collections.Generic;
+
 
 namespace Lean.Touch
 {
@@ -37,6 +39,9 @@ namespace Lean.Touch
 
 		private Vector3 remainingTranslation;
 
+		public bool isLeftBox;
+		public bool isRightBox;
+
 		/// <summary>If you've set Use to ManuallyAddedFingers, then you can call this method to manually add a finger.</summary>
 		public void AddFinger(LeanFinger finger)
 		{
@@ -67,6 +72,20 @@ namespace Lean.Touch
 			Use.UpdateRequiredSelectable(gameObject);
 		}
 
+		protected virtual void Start()
+        {
+            if (gameObject.CompareTag("left"))
+			{
+				isLeftBox = true;
+				isRightBox = false;
+			}
+			else if (gameObject.CompareTag("right"))
+			{
+				isLeftBox = false;
+				isRightBox = true;
+			}
+		}
+
 		protected virtual void Update()
 		{
 			// Store
@@ -74,6 +93,20 @@ namespace Lean.Touch
 
 			// Get the fingers we want to use
 			var fingers = Use.UpdateAndGetFingers();
+
+			// // Filter out any fingers whose initial touch (StartScreenPosition) is not within our allowed area.
+			// List<LeanFinger> validFingers = new List<LeanFinger>();
+			// foreach (var finger in fingers)
+			// {
+			// 	if (IsWithinAllowedArea(finger.StartScreenPosition))
+			// 	{
+			// 		validFingers.Add(finger);
+			// 	}
+			// }
+
+			// // If no valid fingers remain, do not process dragging.
+			// if (validFingers.Count == 0)
+			// 	return;
 
 			// Calculate the screenDelta value based on these fingers
 			var screenDelta = LeanGesture.GetScreenDelta(fingers);
@@ -112,6 +145,30 @@ namespace Lean.Touch
 			remainingTranslation = newRemainingTranslation;
 		}
 
+		// private bool IsWithinAllowedArea(Vector2 screenPoint)
+		// {
+		// 	float edgeMargin = 100f;
+		// 	float middleMargin = 100f;
+
+		// 	Debug.Log(screenPoint);
+
+		// 	// Check the overall edge margins.
+		// 	if (screenPoint.x < edgeMargin || screenPoint.x > Screen.width - edgeMargin ||
+		// 		screenPoint.y < edgeMargin || screenPoint.y > Screen.height - edgeMargin)
+		// 	{
+		// 		return false;
+		// 	}
+
+		// 	// Additionally, enforce a margin along the middle of the screen.
+		// 	// For the left box, the tap must be clearly on the left side.
+		// 	if (screenPoint.x > Screen.width / 2 - middleMargin && screenPoint.x < Screen.width / 2 + middleMargin)
+		// 	{
+		// 		return false;
+		// 	}
+
+		// 	return true;
+		// }
+
 		private void TranslateUI(Vector2 screenDelta)
 		{
 			var finalCamera = _camera;
@@ -133,19 +190,13 @@ namespace Lean.Touch
 			screenPoint += screenDelta * Sensitivity;
 			// Debug.Log("making bounds for front view");
 
-			// if (isFrontView == 1.0f) {
-			// 	// Clamp the screen position so that x stays within the left half of the screen.
-			// 	// Here, we assume the left half is defined as x between 0 and Screen.width / 2,
-			// 	// and for y, we keep the entire screen height (from 0 to Screen.height).
-			// 	screenPoint.x = Mathf.Clamp(screenPoint.x, 0, Screen.width / 2);
-			// 	screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
-			// } else {
-			// 	// Clamp the screen position so that x stays within the right half of the screen.
-            //     // Here, we assume the right half is defined as x between Screen.width / 2 and Screen.width,
-            //     // and for y, we keep the entire screen height (from 0 to Screen.height).
-            //     screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2, Screen.width);
-            //     screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
-			// }
+			if (isLeftBox) {
+				screenPoint.x = Mathf.Clamp(screenPoint.x, 0, Screen.width / 2);
+				screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+			} else if (isRightBox) {
+				screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2, Screen.width);
+				screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+			}
 
 			// Convert back to world space
 			var worldPoint = default(Vector3);
@@ -168,6 +219,14 @@ namespace Lean.Touch
 
 				// Add the deltaPosition
 				screenPoint += (Vector3)screenDelta * Sensitivity;
+
+				if (isLeftBox) {
+					screenPoint.x = Mathf.Clamp(screenPoint.x, 0, Screen.width / 2);
+					screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+				} else if (isRightBox) {
+					screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2, Screen.width);
+					screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+				}
 
 				// Convert back to world space
 				transform.position = camera.ScreenToWorldPoint(screenPoint);
