@@ -6,11 +6,19 @@
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
+        // _ClipTransparency("Clipped Transparency", Range(0,1)) = 0.5
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         LOD 200
+
+        // Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+        // LOD 200
+
+        // Cull Off
+        // ZWrite Off
+        // Blend SrcAlpha OneMinusSrcAlpha
 
         // render faces regardless if they point towards the camera or away from it
         Cull Off
@@ -38,6 +46,7 @@
         float4 _PlaneDown;
         float4 _Cylinder;
         float3 _Position;
+        // float _ClipTransparency;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -60,6 +69,18 @@
             distanceDown = distanceDown + _PlaneDown.w;
 
             clip(distanceUp * distanceDown);
+
+            // // Calculate combined clip factor (1 = fully visible, 0 = fully clipped)
+            // float visibility = saturate(sign(distanceUp * distanceDown * cylinderClip));
+            
+            // // Apply standard shading
+            // fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
+            // o.Albedo = c.rgb;
+            // o.Metallic = _Metallic;
+            // o.Smoothness = _Glossiness;
+
+            // // Control transparency
+            // o.Alpha = lerp(_ClipTransparency, c.a, visibility);
 
             //clip the radius
             //clip the radius

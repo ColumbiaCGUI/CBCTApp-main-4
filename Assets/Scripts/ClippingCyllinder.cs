@@ -43,6 +43,9 @@ public class ClippingCyllinder : MonoBehaviour
         planeUp = new Plane(transform.up, transform.position + transform.up * height / 2);
         planeDown = new Plane(-1 * transform.up, transform.position + -1 * transform.up * height / 2);
 
+        // transparency
+        // float clipTransparency = 0.3f; 
+
         foreach (Material m in mat)
         {
             //transfer values from plane to vector4
@@ -65,6 +68,9 @@ public class ClippingCyllinder : MonoBehaviour
 
 
             //Debug.Log("xRay z:" + xRayHead.transform.position.z);
+
+            // set transparency
+            // m.SetFloat("_ClipTransparency", clipTransparency);
         }
     
     }

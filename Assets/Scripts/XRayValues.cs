@@ -30,6 +30,7 @@ public class XRayValues : MonoBehaviour
         UIEnforceConstraints frontUI = front.GetComponent<UIEnforceConstraints>();
         UIEnforceConstraints sideUI = side.GetComponent<UIEnforceConstraints>();
 
+        // this refers to the position of the clipped region 
         pos = new Vector3(
             front.transform.localPosition.x + front.transform.localScale.x * frontUI.savedPos.x, 
             front.transform.localPosition.y + front.transform.localScale.y * frontUI.savedPos.y, 
