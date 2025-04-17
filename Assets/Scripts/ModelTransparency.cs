@@ -23,7 +23,7 @@ public class ModelTransparency : MonoBehaviour
     }
 
     void Update() {
-        Debug.Log("Model transparency is " + slider.value);
+        // Debug.Log("Model transparency is " + slider.value);
         ChangeTransparency(slider.value);
         
     }

@@ -42,6 +42,7 @@ public class SceneHandler : MonoBehaviour
     public Button preview; 
 
     public GameObject transparency;
+    public GameObject transparencyFov;
     public GameObject near_clip;
     public GameObject far_clip; 
 
@@ -90,6 +91,7 @@ public class SceneHandler : MonoBehaviour
         // ARButton.GetComponent<ARHandler>().NonARMode();
         //ARButton.SetActive(false);
         transparency.SetActive(false);
+        transparencyFov.SetActive(false); 
         near_clip.SetActive(false);
         far_clip.SetActive(false);
 
@@ -145,6 +147,7 @@ public class SceneHandler : MonoBehaviour
 
         ARButton.SetActive(true);
         transparency.SetActive(true);
+        transparencyFov.SetActive(true);
         near_clip.SetActive(true);
         far_clip.SetActive(true);
 

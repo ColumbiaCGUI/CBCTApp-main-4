@@ -21,7 +21,7 @@ public class FOVTransparency : MonoBehaviour
 
     void Update() {
         ChangeTransparency(slider.value);
-        Debug.Log("Mat _Color = " + mat.GetColor("_Color"));
+        // Debug.Log("Mat _Color = " + mat.GetColor("_Color"));
     }
 
     void ChangeTransparency(float alphaVal)

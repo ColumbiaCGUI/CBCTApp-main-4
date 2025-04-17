@@ -2,7 +2,6 @@ using UnityEngine;
 using CW.Common;
 using System.Collections.Generic;
 
-
 namespace Lean.Touch
 {
 	/// <summary>This component allows you to translate the current GameObject relative to the camera using the finger drag gesture.</summary>
@@ -88,6 +87,9 @@ namespace Lean.Touch
 
 		protected virtual void Update()
 		{
+			// maintain boundary constraint
+			MaintainBoundary();
+
 			// Store
 			var oldPosition = transform.localPosition;
 
@@ -113,6 +115,7 @@ namespace Lean.Touch
 
 			if (screenDelta != Vector2.zero)
 			{
+				Debug.Log("button moved");
 				// Perform the translation
 				if (transform is RectTransform)
 				{
@@ -171,6 +174,7 @@ namespace Lean.Touch
 
 		private void TranslateUI(Vector2 screenDelta)
 		{
+			Debug.Log("Moving buttons");
 			var finalCamera = _camera;
 
 			if (finalCamera == null)
@@ -190,12 +194,14 @@ namespace Lean.Touch
 			screenPoint += screenDelta * Sensitivity;
 			// Debug.Log("making bounds for front view");
 
+			float offset = 2.0f;
+
 			if (isLeftBox) {
-				screenPoint.x = Mathf.Clamp(screenPoint.x, 0, Screen.width / 2);
-				screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+				screenPoint.x = Mathf.Clamp(screenPoint.x, 0 + offset, Screen.width / 2 - offset);
+				screenPoint.y = Mathf.Clamp(screenPoint.y, 0 + offset, Screen.height - offset);
 			} else if (isRightBox) {
-				screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2, Screen.width);
-				screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+				screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2 + offset, Screen.width - offset);
+				screenPoint.y = Mathf.Clamp(screenPoint.y, 0 + offset, Screen.height - offset);
 			}
 
 			// Convert back to world space
@@ -205,12 +211,34 @@ namespace Lean.Touch
 			{
 				transform.position = worldPoint;
 			}
+
+			// enforce on child as well 
+			foreach (Transform child in transform) {
+				if (child) {
+					var childPoint = RectTransformUtility.WorldToScreenPoint(finalCamera, child.position);
+					if (isLeftBox) {
+						childPoint.x = Mathf.Clamp(childPoint.x, 0 + offset, Screen.width / 2 - offset);
+						childPoint.y = Mathf.Clamp(childPoint.y, 0 + offset, Screen.height - offset);
+					} else if (isRightBox) {
+						childPoint.x = Mathf.Clamp(childPoint.x, Screen.width / 2 + offset, Screen.width - offset);
+						childPoint.y = Mathf.Clamp(childPoint.y, 0 + offset, Screen.height - offset);
+					}
+					// Convert back to world space
+					var childWorldPoint = default(Vector3);
+
+					if (RectTransformUtility.ScreenPointToWorldPointInRectangle(transform.parent as RectTransform, childPoint, finalCamera, out childWorldPoint) == true)
+					{
+						child.position = childWorldPoint;
+					}
+				}
+			}
 		}
 
 		private void Translate(Vector2 screenDelta)
 		{
 			// Make sure the camera exists
 			var camera = CwHelper.GetCamera(this._camera, gameObject);
+			Debug.Log("Moving buttons");
 
 			if (camera != null)
 			{
@@ -219,6 +247,11 @@ namespace Lean.Touch
 
 				// Add the deltaPosition
 				screenPoint += (Vector3)screenDelta * Sensitivity;
+
+				// obtain current width and height of the box
+				// UIEnforceConstraints constraints = GetComponent<UIEnforceConstraints>(); 
+				// float width = constraints.width; 
+				// float height = constraints.height; 
 
 				if (isLeftBox) {
 					screenPoint.x = Mathf.Clamp(screenPoint.x, 0, Screen.width / 2);
@@ -230,10 +263,65 @@ namespace Lean.Touch
 
 				// Convert back to world space
 				transform.position = camera.ScreenToWorldPoint(screenPoint);
+
+				// find the children
+				foreach (Transform child in transform) {
+					if (child) {
+						var childPoint = camera.WorldToScreenPoint(child.position);
+						if (isLeftBox) {
+							childPoint.x = Mathf.Clamp(childPoint.x, 0, Screen.width / 2);
+							childPoint.y = Mathf.Clamp(childPoint.y, 0, Screen.height);
+						} else if (isRightBox) {
+							childPoint.x = Mathf.Clamp(childPoint.x, Screen.width / 2, Screen.width);
+							childPoint.y = Mathf.Clamp(childPoint.y, 0, Screen.height);
+						}
+						child.position = camera.ScreenToWorldPoint(childPoint); 
+					}
+				}
 			}
 			else
 			{
 				Debug.LogError("Failed to find camera. Either tag your camera as MainCamera, or set one in this component.", this);
+			}
+		}
+
+		private void MaintainBoundary() {
+			var camera = CwHelper.GetCamera(this._camera, gameObject);
+			if (camera == null) {
+				return; 
+			}
+			// // Screen position of the transform
+			// var screenPoint = camera.WorldToScreenPoint(transform.position);
+			// if (isLeftBox) {
+			// 	screenPoint.x = Mathf.Clamp(screenPoint.x, 0, Screen.width / 2);
+			// 	screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+			// } else if (isRightBox) {
+			// 	screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2, Screen.width);
+			// 	screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+			// }
+
+			// // Convert back to world space
+			// transform.position = camera.ScreenToWorldPoint(screenPoint);
+
+			// find the children
+			foreach (Transform child in transform) {
+				if (child) {
+					var childPoint = camera.WorldToScreenPoint(child.position);
+					if (isLeftBox) {
+						if (childPoint.x < 0 || childPoint.x >= Screen.width / 2 || childPoint.y < 0 || childPoint.y >= Screen.height) {
+							childPoint.x = Mathf.Clamp(childPoint.x, 0, Screen.width / 2);
+							childPoint.y = Mathf.Clamp(childPoint.y, 0, Screen.height);
+							child.position = camera.ScreenToWorldPoint(childPoint); 
+						}
+					} else if (isRightBox) {
+						if (childPoint.x < Screen.width / 2 || childPoint.x >= Screen.width || childPoint.y < 0 || childPoint.y >= Screen.height) {
+							childPoint.x = Mathf.Clamp(childPoint.x, Screen.width / 2, Screen.width);
+							childPoint.y = Mathf.Clamp(childPoint.y, 0, Screen.height);
+							child.position = camera.ScreenToWorldPoint(childPoint); 
+
+						}
+					}
+				}
 			}
 		}
 	}
