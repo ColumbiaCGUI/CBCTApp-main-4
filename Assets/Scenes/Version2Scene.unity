@@ -303,6 +303,7 @@ GameObject:
   - component: {fileID: 44551144}
   - component: {fileID: 44551146}
   - component: {fileID: 44551147}
+  - component: {fileID: 44551148}
   m_Layer: 9
   m_Name: RightBox
   m_TagString: right
@@ -516,6 +517,21 @@ MonoBehaviour:
   onSelectedSelectFingerUp:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &44551148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44551138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbd85989fe532d0458d688c40be7b181, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLeftBox: 0
+  isRightBox: 1
+  UICamera: {fileID: 1507668635}
 --- !u!1 &59233073
 GameObject:
   m_ObjectHideFlags: 0
@@ -4338,6 +4354,7 @@ GameObject:
   - component: {fileID: 792872526}
   - component: {fileID: 792872527}
   - component: {fileID: 792872528}
+  - component: {fileID: 792872529}
   m_Layer: 8
   m_Name: LeftBox
   m_TagString: left
@@ -4551,6 +4568,21 @@ MonoBehaviour:
   onSelectedSelectFingerUp:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &792872529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792872520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbd85989fe532d0458d688c40be7b181, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLeftBox: 1
+  isRightBox: 0
+  UICamera: {fileID: 1507668635}
 --- !u!1 &806598864
 GameObject:
   m_ObjectHideFlags: 0
@@ -6840,6 +6872,7 @@ MonoBehaviour:
   XRayHead: {fileID: 919132148159049777}
   preview: {fileID: 812788659}
   transparency: {fileID: 391346652}
+  transparencyFov: {fileID: 1886367572}
   near_clip: {fileID: 533384280}
   far_clip: {fileID: 352196715}
 --- !u!114 &1324709854
@@ -8990,7 +9023,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1890747914}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 0.45
+  m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 0.15
   m_OnValueChanged:
