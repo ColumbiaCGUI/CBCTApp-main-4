@@ -31,7 +31,9 @@ namespace Lean.Touch
 
 		[System.Serializable] public class LeanFingerEvent : UnityEvent<LeanFinger> {}
 		[System.Serializable] public class LeanSelectFingerEvent : UnityEvent<LeanSelectByFinger, LeanFinger> {}
-
+		[SerializeField] private string requiredTag = "UI";
+		public string RequiredTag { get => requiredTag; set => requiredTag = value; }
+		
 		/// <summary>This allows you to control which fingers will be used by components that require this selectable.</summary>
 		public UseType Use { set { use = value; } get { return use; } } [SerializeField] private UseType use;
 
@@ -80,6 +82,12 @@ namespace Lean.Touch
 
 		public void SelectSelf(LeanFinger finger)
 		{
+			// Skip if the tag does not match
+			if (string.IsNullOrEmpty(requiredTag) == false && CompareTag(requiredTag) == false)
+			{
+				return;
+			}
+			
 			if (SelfSelected == false)
 			{
 				SelfSelected = true;

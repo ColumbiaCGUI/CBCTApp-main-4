@@ -9,6 +9,7 @@ TagManager:
   - sideCam
   - left
   - right
+  - UI
   layers:
   - Default
   - TransparentFX
