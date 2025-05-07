@@ -88,7 +88,7 @@ namespace Lean.Touch
 		protected virtual void Update()
 		{
 			// maintain boundary constraint
-			// MaintainBoundary();
+			MaintainBoundary();
 
 			// Store
 			var oldPosition = transform.localPosition;
@@ -115,7 +115,7 @@ namespace Lean.Touch
 
 			if (screenDelta != Vector2.zero)
 			{
-				// Debug.Log("button moved");
+				Debug.Log("button moved");
 				// Perform the translation
 				if (transform is RectTransform)
 				{
@@ -174,6 +174,7 @@ namespace Lean.Touch
 
 		private void TranslateUI(Vector2 screenDelta)
 		{
+			Debug.Log("Moving buttons");
 			var finalCamera = _camera;
 
 			if (finalCamera == null)
@@ -237,6 +238,7 @@ namespace Lean.Touch
 		{
 			// Make sure the camera exists
 			var camera = CwHelper.GetCamera(this._camera, gameObject);
+			Debug.Log("Moving buttons");
 
 			if (camera != null)
 			{
@@ -285,7 +287,7 @@ namespace Lean.Touch
 
 		private void MaintainBoundary() {
 			var camera = CwHelper.GetCamera(this._camera, gameObject);
-			if (camera == null || camera.tag != "MainCamera") {
+			if (camera == null || camera.name != "MainCamera") {
 				return; 
 			}
 			// // Screen position of the transform
