@@ -196,13 +196,13 @@ namespace Lean.Touch
 
 			float offset = 2.0f;
 
-			if (isLeftBox) {
-				screenPoint.x = Mathf.Clamp(screenPoint.x, 0 + offset, Screen.width / 2 - offset);
-				screenPoint.y = Mathf.Clamp(screenPoint.y, 0 + offset, Screen.height - offset);
-			} else if (isRightBox) {
-				screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2 + offset, Screen.width - offset);
-				screenPoint.y = Mathf.Clamp(screenPoint.y, 0 + offset, Screen.height - offset);
-			}
+			// if (isLeftBox) {
+			// 	screenPoint.x = Mathf.Clamp(screenPoint.x, 0 + offset, Screen.width / 2 - offset);
+			// 	screenPoint.y = Mathf.Clamp(screenPoint.y, 0 + offset, Screen.height - offset);
+			// } else if (isRightBox) {
+			// 	screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2 + offset, Screen.width - offset);
+			// 	screenPoint.y = Mathf.Clamp(screenPoint.y, 0 + offset, Screen.height - offset);
+			// }
 
 			// Convert back to world space
 			var worldPoint = default(Vector3);
@@ -253,13 +253,13 @@ namespace Lean.Touch
 				// float width = constraints.width; 
 				// float height = constraints.height; 
 
-				if (isLeftBox) {
-					screenPoint.x = Mathf.Clamp(screenPoint.x, 0, Screen.width / 2);
-					screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
-				} else if (isRightBox) {
-					screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2, Screen.width);
-					screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
-				}
+				// if (isLeftBox) {
+				// 	screenPoint.x = Mathf.Clamp(screenPoint.x, 0, Screen.width / 2);
+				// 	screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+				// } else if (isRightBox) {
+				// 	screenPoint.x = Mathf.Clamp(screenPoint.x, Screen.width / 2, Screen.width);
+				// 	screenPoint.y = Mathf.Clamp(screenPoint.y, 0, Screen.height);
+				// }
 
 				// Convert back to world space
 				transform.position = camera.ScreenToWorldPoint(screenPoint);
