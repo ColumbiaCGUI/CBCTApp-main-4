@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
+using TMPro;
 
 /// ARHandler is in charge of changing between the AR mode and the non-AR mode. 
 public class ARHandler : MonoBehaviour
@@ -26,6 +27,7 @@ public class ARHandler : MonoBehaviour
     public ARSession arSession;
 
     public SceneHandler sceneHandler;
+    // public TextMeshProUGUI debugText; 
 
     [SerializeField]
     ARRaycastManager raycastManager;
@@ -43,6 +45,8 @@ public class ARHandler : MonoBehaviour
     bool placed = false;
 
     float x_diff;
+    private float previousDistance = 1.0f;
+    private Vector3 originalScale;
 
     void Start()
     {
@@ -56,22 +60,64 @@ public class ARHandler : MonoBehaviour
 
     void Update()
     {
-        if (isARMode && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-        {
+        // update original scale and previous distance
+        originalScale = xRayHead.transform.localScale;
+        previousDistance = Vector3.Distance(ARCam.transform.position, xRayHead.transform.position);
 
-            if (Input.GetTouch(0).position.x < widthSlider.transform.position.x || Input.GetTouch(0).position.x > (transparencySlider.transform.position.x - x_diff))
+        if (isARMode && Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            // debugText.text += "widthSlider x: " + widthSlider.transform.position.x;
+
+            // Debug.Log("touch position x: " + Input.GetTouch(0).position.x); 
+            // Debug.Log("widthSlider x: " + widthSlider.transform.position.x);
+
+            // ensure the finger has to touch within a bound to place the head
+            if (Input.GetTouch(0).position.x < widthSlider.transform.position.x + 100 || Input.GetTouch(0).position.x > (transparencySlider.transform.position.x - x_diff - 100))
             {
                 return;
             }
             if (raycastManager.Raycast(Input.GetTouch(0).position, hits))
             {
+                Collider skullCollider = xRayHead.GetComponent<Collider>();
+
+                if (skullCollider != null)
+                {
+                    // Using ClosestPoint: if the hit point is inside the collider, the closest point equals the hit point
+                    Vector3 closestPoint = skullCollider.ClosestPoint(hits[0].pose.position);
+                    if (Vector3.Distance(closestPoint, hits[0].pose.position) < 0.001f)
+                    {
+                        // Hit is inside the skull's collider, so do nothing.
+                        return;
+                    }
+                }
+
                 if (!placed)
                 {
+                    // record original scale and distance when first spawning the head
+                    originalScale = xRayHead.transform.localScale;
+                    previousDistance = Vector3.Distance(ARCam.transform.position, xRayHead.transform.position);
+
                     xRayHead.SetActive(true);
                     placed = true;
-                    xRayHead.transform.position = hits[0].pose.position;
-                    //xRayHead.transform.LookAt(ARCam.transform, Vector3.up);
                 }
+
+                // allow repeated placement upon tap, however this will increase false positives
+                xRayHead.transform.position = hits[0].pose.position;
+
+                // readapt visual size when spawning at new location
+                float newDistance = Vector3.Distance(ARCam.transform.position, hits[0].pose.position);
+                float scaleFactor = newDistance / previousDistance;
+                xRayHead.transform.localScale = originalScale * scaleFactor;
+
+                // update state
+                originalScale = xRayHead.transform.localScale;
+                previousDistance = newDistance;
+
+                //xRayHead.transform.LookAt(ARCam.transform, Vector3.up);
+
+                // ensure the x-ray head is upright 
+                // Quaternion targetRotation = Quaternion.Euler(0, hits[0].pose.rotation.eulerAngles.y, 0);
+                // xRayHead.transform.rotation = targetRotation;
             }
         }
     }
@@ -93,7 +139,7 @@ public class ARHandler : MonoBehaviour
         sceneHandler.SetXRayAsMainPage();
     	isARMode = true;
 
-        xRayHead.transform.rotation = Quaternion.Euler(90.0f, 0.0f, 0);
+        // xRayHead.transform.rotation = Quaternion.Euler(90.0f, 0.0f, 0);
 
         xRayHead.SetActive(true);
         //head.SetActive(false);
@@ -125,8 +171,10 @@ public class ARHandler : MonoBehaviour
         sceneHandler.ARExit();
         sceneHandler.SetXRayAsMainPage();
         xRayHead.transform.position = new Vector3(0, 0, 0);
-        xRayHead.transform.rotation = Quaternion.Euler(90.0f, 0, 0);
-        xRayHead.transform.localScale = new Vector3(0.004f, 0.004f, 0.004f);
+        xRayHead.transform.rotation = Quaternion.Euler(0.0f, 0, 0);
+
+        // if already scaled during AR mode, this resets the scale
+        // xRayHead.transform.localScale = new Vector3(0.004f, 0.004f, 0.004f);
     }
 
     public void UIMode ()

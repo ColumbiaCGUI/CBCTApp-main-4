@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Lean.Touch;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,6 +27,8 @@ public class SceneHandler : MonoBehaviour
     /// This button is overlayed on the right half of the mini view on the bottom right when the x-ray page is loaded.
     public GameObject sideButtonCanvas;
 
+    // public GameObject hiddenButton; 
+
     /// True if the x-ray scene is loaded. False if the UI scene is loaded.
     static public bool isXRay;
 
@@ -42,8 +45,12 @@ public class SceneHandler : MonoBehaviour
     public Button preview; 
 
     public GameObject transparency;
+    public GameObject transparencyFov;
     public GameObject near_clip;
-    public GameObject far_clip; 
+    public GameObject far_clip;
+
+    public GameObject leftBox;
+    public GameObject rightBox;
 
     /// Boolean to indicate if preview currently visible
     private bool show = true; 
@@ -80,16 +87,35 @@ public class SceneHandler : MonoBehaviour
         isXRay = false;
 
         flipScript.resetView();
+        
+        // turn off all lean components
+        XRayHead.GetComponent<LeanPinchScale>().enabled = false;
+        // XRayHead.GetComponent<LeanDragTranslate>().enabled = false;
+        XRayHead.GetComponent<LeanTwistRotateAxis>().enabled = false;
+        
+        // turn on lean selectable by finger for all childrean
+
+        foreach (Transform child in leftBox.transform)
+        {
+            child.gameObject.GetComponent<LeanSelectableByFinger>().enabled = true;
+        }
+
+        foreach (Transform child in rightBox.transform)
+        {
+            child.gameObject.GetComponent<LeanSelectableByFinger>().enabled = true;
+        }
 
         xRayButtonCanvas.SetActive(true);
         preview.gameObject.SetActive(true);
 
         mainButtonCanvas.SetActive(false);
         sideButtonCanvas.SetActive(false);
-
+        
+        // hiddenButton.SetActive(false);
         // ARButton.GetComponent<ARHandler>().NonARMode();
         //ARButton.SetActive(false);
         transparency.SetActive(false);
+        transparencyFov.SetActive(false); 
         near_clip.SetActive(false);
         far_clip.SetActive(false);
 
@@ -136,15 +162,34 @@ public class SceneHandler : MonoBehaviour
         isXRay = true;
 
         flipScript.resetView();
+        
+        // turn on lean components
+        XRayHead.GetComponent<LeanPinchScale>().enabled = true;
+        // XRayHead.GetComponent<LeanDragTranslate>().enabled = true;
+        XRayHead.GetComponent<LeanTwistRotateAxis>().enabled = true;
+        
+        // turn off left, right box movements
+        foreach (Transform child in leftBox.transform)
+        {
+            child.gameObject.GetComponent<LeanSelectableByFinger>().enabled = false;
+        }
+
+        foreach (Transform child in rightBox.transform)
+        {
+            child.gameObject.GetComponent<LeanSelectableByFinger>().enabled = false;
+        }
 
         xRayButtonCanvas.SetActive(false);
         preview.gameObject.SetActive(false);
 
         mainButtonCanvas.SetActive(true);
         sideButtonCanvas.SetActive(true);
+        
+        // hiddenButton.SetActive(true);
 
         ARButton.SetActive(true);
         transparency.SetActive(true);
+        transparencyFov.SetActive(true);
         near_clip.SetActive(true);
         far_clip.SetActive(true);
 

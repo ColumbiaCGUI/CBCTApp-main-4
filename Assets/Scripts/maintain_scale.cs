@@ -19,8 +19,8 @@ public class maintain_scale : MonoBehaviour
         downButton = gameObject.transform.Find("CircleBottom").gameObject;
         upButton = gameObject.transform.Find("CircleTop").gameObject;
 
-        Debug.Log(gameObject);
-        Debug.Log(upButton);
+        // Debug.Log(gameObject);
+        // Debug.Log(upButton);
     }
 
     // Update is called once per frame

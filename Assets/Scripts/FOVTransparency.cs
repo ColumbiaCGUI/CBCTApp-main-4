@@ -1,13 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-  /// This function sets the alpha value of the input material based on a slider's value
-public class ModelTransparency : MonoBehaviour
+public class FOVTransparency : MonoBehaviour
 {
-
-
     /// The material whose transparency is being changed 
     public Material mat; 
 
@@ -23,9 +20,8 @@ public class ModelTransparency : MonoBehaviour
     }
 
     void Update() {
-        // Debug.Log("Model transparency is " + slider.value);
         ChangeTransparency(slider.value);
-        
+        // Debug.Log("Mat _Color = " + mat.GetColor("_Color"));
     }
 
     void ChangeTransparency(float alphaVal)
